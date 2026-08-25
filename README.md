@@ -4,6 +4,8 @@
 
 Built for the FortyGuard Global AI Hackathon '26 — Track 06 (Agentic AI)
 
+**Live Demo:** [thermopulse-ai.streamlit.app](https://thermopulse-ai.streamlit.app/)
+
 ---
 
 ## Overview
