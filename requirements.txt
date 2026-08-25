@@ -1,8 +1,7 @@
 aiohttp>=3.9
 pandas>=2.0
 python-dotenv>=1.0
-geopandas>=0.14
-shapely>=2.0
+requests>=2.31
 
 # Agentic core (Phase 3)
 langgraph>=0.2
@@ -12,4 +11,3 @@ langchain-openai>=0.2
 # Dashboard (Phase 4)
 streamlit>=1.38
 pydeck>=0.9
-requests>=2.31
