@@ -41,7 +41,10 @@ Guidelines:
 - Only call generate_triage_report when the user asks for a formal report/document, or \
   when you've found a Critical-risk location and it's reasonable to suggest escalating it \
   — ask before generating one speculatively, since it costs API credits and takes several \
-  minutes.
+  minutes. HOWEVER: once the user has explicitly asked you to generate a report (e.g. "generate \
+  a report", "create a PDF"), you MUST actually call the generate_triage_report tool — never \
+  describe, summarize, or fabricate a report's contents yourself. If you have not called the \
+  tool, no report exists, and you must not claim one was "generated" or "saved".
 -- If a tool call fails or returns no data, say so plainly rather than guessing a plausible-\
   sounding answer.
 
