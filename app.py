@@ -20,14 +20,25 @@ import streamlit as st
 
 # Bridge Streamlit Cloud's secrets manager into os.environ so the existing
 # FortyGuardConfig/agent code (which reads via os.environ.get) works
-# unchanged whether running locally (.env file) or deployed (st.secrets).
-for _key in (
-    "FORTYGUARD_API_KEY", "FORTYGUARD_BASE_URL", "LLM_PROVIDER",
-    "OPENROUTER_API_KEY", "OPENROUTER_MODEL", "GOOGLE_API_KEY",
-    "GEMINI_MODEL", "OPENAI_API_KEY", "OPENAI_MODEL",
-):
-    if _key in st.secrets and _key not in os.environ:
-        os.environ[_key] = st.secrets[_key]
+# unchanged whether running locally (.env file, no secrets.toml) or
+# deployed (st.secrets, backed by a real secrets.toml). We only touch
+# st.secrets if a secrets file actually exists, since accessing it at all
+# raises when none is present (as it does for local .env-based runs).
+import pathlib
+
+_secrets_paths = [
+    pathlib.Path.home() / ".streamlit" / "secrets.toml",
+    pathlib.Path(__file__).parent / ".streamlit" / "secrets.toml",
+]
+
+if any(p.exists() for p in _secrets_paths):
+    for _key in (
+        "FORTYGUARD_API_KEY", "FORTYGUARD_BASE_URL", "LLM_PROVIDER",
+        "OPENROUTER_API_KEY", "OPENROUTER_MODEL", "GOOGLE_API_KEY",
+        "GEMINI_MODEL", "OPENAI_API_KEY", "OPENAI_MODEL",
+    ):
+        if _key in st.secrets and _key not in os.environ:
+            os.environ[_key] = st.secrets[_key]
 
 import pandas as pd
 import pydeck as pdk

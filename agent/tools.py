@@ -114,15 +114,26 @@ async def compare_route_options(waypoints_json: str, date: str, hour: str) -> st
         lines.append(f"- {name}: {val}")
 
     valid = {k: v for k, v in results.items() if v is not None}
-    if valid:
-        best = min(valid, key=valid.get)
-        lines.append(f"\nRecommendation: {best} is the coolest option ({valid[best]:.1f}°C avg heat index).")
+    if len(valid) >= 2:
+        sorted_routes = sorted(valid.items(), key=lambda kv: kv[1])
+        best_name, best_val = sorted_routes[0]
+        second_val = sorted_routes[1][1]
+        if abs(best_val - second_val) < 0.1:
+            lines.append(
+                f"\nResult: {' and '.join(n for n, v in valid.items())} have essentially "
+                f"identical heat exposure (within 0.1°C) — there is no meaningful thermal "
+                f"difference between them at this date/time."
+            )
+        else:
+            lines.append(f"\nRecommendation: {best_name} is the coolest option ({best_val:.1f}°C avg heat index).")
+    elif len(valid) == 1:
+        name, val = next(iter(valid.items()))
+        lines.append(f"\nOnly {name} returned valid data ({val:.1f}°C avg heat index).")
     else:
         lines.append("\nNo valid data returned for any route.")
 
     return "\n".join(lines)
-
-
+    
 @tool
 async def generate_triage_report(
     latitude: float, longitude: float, temperature: float, date: str,
