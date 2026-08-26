@@ -1,10 +1,7 @@
 """
-ThermoPulse AI — visual identity for the Streamlit dashboard.
+ThermoPulse AI — Refined Dark Slate Theme for Streamlit.
 
-A dedicated theme (not tied to any external brand): dark, professional
-background with a thermal gradient — cool blue for low risk shading up
-through amber to hot red for critical risk — used consistently across the
-map, badges, and metric cards so the color itself carries meaning.
+Designed for high contrast, maximum legibility, and zero eye-strain.
 """
 
 from __future__ import annotations
@@ -12,16 +9,16 @@ from __future__ import annotations
 import streamlit as st
 
 COLORS = {
-    "bg": "#0B1120",
-    "bg_panel": "#111A2E",
-    "border": "#1E293B",
-    "text": "#E2E8F0",
-    "text_dim": "#94A3B8",
-    "cool": "#3B82F6",     # Low risk
-    "teal": "#06B6D4",     # accent / brand
-    "amber": "#F59E0B",    # Moderate risk
-    "orange": "#F97316",   # High risk
-    "hot": "#EF4444",      # Critical risk
+    "bg": "#0F172A",         # Deep Slate Blue (مريح للعين جداً ومظلم)
+    "bg_panel": "#1E293B",   # Dark Slate Panel للـ Sidebar والبطاقات
+    "border": "#334155",     # حد واضح ونظيف
+    "text": "#F8FAFC",       # أبيض ناصع للكلام عشان يظهر بوضوح تام
+    "text_dim": "#94A3B8",   # رمادي فاتح للنصوص الفرعية
+    "cool": "#38BDF8",       # أزرق سماوي واضح (Low risk)
+    "teal": "#2DD4BF",       # تركواز للـ Accent
+    "amber": "#FBBF24",      # أصفر ذهبي واضح (Moderate risk)
+    "orange": "#FB923C",     # برتقالي داكن (High risk)
+    "hot": "#F87171",        # أحمر ناري واضح (Critical risk)
 }
 
 RISK_COLORS = {
@@ -31,39 +28,43 @@ RISK_COLORS = {
     "Critical": COLORS["hot"],
 }
 
-# RGB tuples for pydeck (which wants [r, g, b, alpha], not hex strings)
+# RGB tuples for pydeck
 RISK_RGB = {
-    "Low": [59, 130, 246, 200],
-    "Moderate": [245, 158, 11, 200],
-    "High": [249, 115, 22, 210],
-    "Critical": [239, 68, 68, 230],
+    "Low": [56, 189, 248, 220],
+    "Moderate": [251, 191, 36, 220],
+    "High": [251, 146, 60, 230],
+    "Critical": [248, 113, 113, 240],
 }
 
 
 def inject_theme() -> None:
-    """Call once near the top of the app to apply the ThermoPulse look."""
+    """Call once near the top of the app to apply the high-contrast Dark theme."""
     st.markdown(
         f"""
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
         html, body, [class*="css"] {{
             font-family: 'Inter', sans-serif;
-        }}
-
-        .stApp {{
-            background: linear-gradient(180deg, {COLORS['bg']} 0%, #0A0E1A 100%);
             color: {COLORS['text']};
         }}
 
+        /* Dark Slate Base Background */
+        .stApp {{
+            background-color: {COLORS['bg']};
+            color: {COLORS['text']};
+        }}
+
+        /* Sidebar */
         section[data-testid="stSidebar"] {{
-            background: {COLORS['bg_panel']};
+            background-color: {COLORS['bg_panel']};
             border-right: 1px solid {COLORS['border']};
         }}
 
         #MainMenu, footer {{ visibility: hidden; }}
         header {{ background: transparent; }}
 
+        /* Hero Header */
         .tp-hero {{
             display: flex;
             align-items: baseline;
@@ -71,9 +72,9 @@ def inject_theme() -> None:
             margin-bottom: 4px;
         }}
         .tp-hero-title {{
-            font-size: 2.2rem;
+            font-size: 2.4rem;
             font-weight: 800;
-            background: linear-gradient(90deg, {COLORS['cool']} 0%, {COLORS['teal']} 35%, {COLORS['amber']} 70%, {COLORS['hot']} 100%);
+            background: linear-gradient(90deg, {COLORS['teal']} 0%, {COLORS['cool']} 40%, {COLORS['amber']} 75%, {COLORS['hot']} 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -82,48 +83,76 @@ def inject_theme() -> None:
         .tp-hero-sub {{
             color: {COLORS['text_dim']};
             font-size: 0.95rem;
-            margin-bottom: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 1.8rem;
         }}
 
+        /* Solid High-Contrast Cards */
         .tp-card {{
-            background: {COLORS['bg_panel']};
+            background-color: {COLORS['bg_panel']};
             border: 1px solid {COLORS['border']};
-            border-radius: 14px;
+            border-radius: 12px;
             padding: 18px 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
         }}
 
         .tp-metric-label {{
             color: {COLORS['text_dim']};
             font-size: 0.8rem;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }}
         .tp-metric-value {{
-            font-size: 1.9rem;
-            font-weight: 700;
-            color: {COLORS['text']};
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: {COLORS['text']} !important;
+            letter-spacing: -0.02em;
         }}
 
+        /* High-Legibility Badges */
         .tp-badge {{
             display: inline-block;
-            padding: 3px 12px;
-            border-radius: 999px;
-            font-size: 0.78rem;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
             font-weight: 700;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.03em;
         }}
 
+        /* Solid Action Buttons */
         div.stButton > button {{
             background: linear-gradient(90deg, {COLORS['cool']}, {COLORS['teal']});
-            color: white;
+            color: #0F172A !important;
+            font-weight: 700;
             border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            padding: 0.6rem 1.4rem;
         }}
         div.stButton > button:hover {{
-            filter: brightness(1.1);
+            filter: brightness(1.15);
+            cursor: pointer;
+        }}
+
+        /* Chat Input Area Fix */
+        .main .block-container {{
+            padding-bottom: 120px;
+        }}
+
+        div[data-testid="stChatInput"] {{
+            position: fixed;
+            bottom: 0;
+            left: 22rem;
+            right: 2rem;
+            z-index: 999;
+            background-color: {COLORS['bg_panel']};
+            padding: 16px 14px;
+            border-top: 1px solid {COLORS['border']};
+        }}
+
+        section[data-testid="stSidebar"][aria-expanded="false"] ~ div div[data-testid="stChatInput"] {{
+            left: 2rem;
         }}
         </style>
         """,
@@ -142,13 +171,13 @@ def hero(title: str = "ThermoPulse AI", subtitle: str = "") -> None:
 
 
 def risk_badge(category: str) -> str:
-    """Return an HTML badge span for a risk category (embed with unsafe_allow_html)."""
+    """Return an HTML badge span with high contrast background."""
     color = RISK_COLORS.get(category, COLORS["text_dim"])
-    return f'<span class="tp-badge" style="background:{color}22; color:{color}; border:1px solid {color}66;">{category}</span>'
+    return f'<span class="tp-badge" style="background:{color}2B; color:{color}; border:1px solid {color};">{category}</span>'
 
 
 def metric_card(label: str, value: str) -> str:
-    """Return an HTML metric card (embed with unsafe_allow_html)."""
+    """Return a clean, high-contrast metric card."""
     return f"""
     <div class="tp-card">
         <div class="tp-metric-label">{label}</div>

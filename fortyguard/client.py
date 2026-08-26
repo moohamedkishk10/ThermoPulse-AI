@@ -540,16 +540,25 @@ class FortyGuardClient:
         temperature: float,
         date_: Union[str, date],
         analysis: Sequence[HeatIntelAnalysis] = ("environmental",),
+        temperature_unit: Literal["celsius", "fahrenheit"] = "celsius",
     ) -> Dict[str, Any]:
         """
         Request a Heat Intelligence PDF report. Returns the result dict
         containing `download_link` (a TEMPORARY signed URL). This wrapper
         does not log the link — fetch it immediately via `download_heat_intelligence_pdf`.
+
+        NOTE ON UNITS: FortyGuard's published API docs state the `temperature`
+        field is in degrees Celsius, but FortyGuard support confirmed via
+        email (Aug 2026) that the endpoint actually expects Fahrenheit despite
+        the documentation. This method defaults temperature_unit="celsius" so
+        callers keep using Celsius as normal everywhere, and converts to
+        Fahrenheit automatically before sending.
         """
+        temp_f = temperature if temperature_unit == "fahrenheit" else (temperature * 9 / 5) + 32
         payload = {
             "latitude": latitude,
             "longitude": longitude,
-            "temperature": temperature,
+            "temperature": temp_f,
             "date": date_.isoformat() if isinstance(date_, date) else date_,
             "analysis": list(analysis),
         }
