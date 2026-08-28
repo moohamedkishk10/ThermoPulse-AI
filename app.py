@@ -66,18 +66,30 @@ def run_async(coro):
 # --------------------------------------------------------------------------- #
 
 def geocode_search(query: str, limit: int = 5):
-    """Return up to `limit` candidate place matches (not just the first blind guess)."""
-    try:
-        resp = requests.get(
-            "https://nominatim.openstreetmap.org/search",
-            params={"q": query, "format": "json", "limit": limit, "addressdetails": 1},
-            headers={"User-Agent": "ThermoPulseAI-Hackathon/1.0"},
-            timeout=10,
-        )
-        resp.raise_for_status()
-        return resp.json()
-    except Exception:
-        return []
+    """
+    Return up to `limit` candidate place matches (not just the first blind guess).
+    Retries automatically on transient failures (Nominatim is a free public
+    service and occasionally rate-limits or times out under load) before
+    giving up, so a one-off hiccup doesn't require a manual re-click.
+    """
+    import time
+
+    last_error = None
+    for attempt in range(3):
+        try:
+            resp = requests.get(
+                "https://nominatim.openstreetmap.org/search",
+                params={"q": query, "format": "json", "limit": limit, "addressdetails": 1},
+                headers={"User-Agent": "ThermoPulseAI-Hackathon/1.0"},
+                timeout=15,
+            )
+            resp.raise_for_status()
+            return resp.json()
+        except Exception as e:
+            last_error = e
+            if attempt < 2:
+                time.sleep(1.5 * (attempt + 1))  # 1.5s, then 3s backoff
+    return []
 
 
 def bounds_from_point(lat: float, lon: float, display_name: str):
